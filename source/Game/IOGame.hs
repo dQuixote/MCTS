@@ -1,6 +1,4 @@
-module Game.IOGame (
-    playGame
-    ) where
+module Game.IOGame where
 
 import Game.Board
 
