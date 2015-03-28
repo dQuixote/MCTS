@@ -1,0 +1,28 @@
+The goal of this project is to implement AI using Monte Carlo Tree Search.
+The procedure uses 4 steps in principle; the steps are:
+  1. "Selection": pick a node to explore from
+  2. "Expansion": deepen the tree by one node
+  3. "Simulation": pick random moves until reaching game over
+  4. "Backpropagation": update all the nodes back up to the
+                        root node with the simulation result
+
+This implementation, however, centers around only 3 functions:
+  1. `pickNode`: performs the selection step
+  2. `explore`: performs the exploration step, and also updates the nodes
+              that have been passed through with the simulation result
+  3. `simulate`: performs the simulation step
+
+The MCTS process begins with lazily constructing the entire GameTree
+as a k-ary tree with MCTS Node data stored in each tree.
+The AI plays by improving the tree through repeated MCTS iterations,
+and then selecting the best-scoring move---
+*the move which leads to the game ending more frequently in victory.*
+This is the premise of MCTS.
+
+The Wikipedia article on the subject of MCTS is also rather helpful.
+
+TODO:
+finish writing readme
+finish writing todo
+write comments
+fix cabal
