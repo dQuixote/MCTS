@@ -15,6 +15,7 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      source
   exposed-modules:
+    AI.Gameplay
     AI.MCTS
     Game.Board
     Game.PlayGame
