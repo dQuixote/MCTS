@@ -48,7 +48,11 @@ explore node -- @(Node score choices terminal turn winner)
     backpropagation = do
         let result = scoreNode a
         return (result, node {score = (ws + result, vs + 1)})
-    exploration = undefined
+    exploration = do
+        let (c, cs) = popBestChild node
+        (result, c') <- explore c
+        return . (,) (negate result) $
+            node {score = (ws + result, vs + 1), choices = c':cs}
 
 simulate :: (GameState a, MonadRandom m) => Node a -> m Int
 simulate = loop where
@@ -68,14 +72,36 @@ scoreNode a
         None         ->  0
         Both         ->  0
 
-ucb :: Int -> Node a -> Double
-ucb t (Node {visits = v, score = s}) = (s' / v') + k * sqrt (log t' / v')
+popBestChild :: (GameState a) => Node a -> (Node a, [Node a])
+popBestChild node
+    | visits node > 0 = popMaximumBy compareUCB $ Game.choices node
+    | otherwise       = error "popBestChild: unexplored node"
   where
-    s' = fromIntegral s
+    compareUCB node1 node2 = compare (ucb vs node1) (ucb vs node2)
+    vs = visits node
+
+popMaximumBy :: (a -> a -> Ordering) -> [a] -> (a, [a])
+popMaximumBy _ [] = error "popMaximumBy: empty list"
+popMaximumBy _ [x] = (x, [])
+popMaximumBy cmp (x:xs) =
+  let (m, xs') = popMaximumBy cmp xs
+  in if cmp m x == LT then (x, m:xs') else (m, x:xs')
+
+ucb :: Int -> Node a -> Double
+ucb t node = (w' / v') + k * sqrt (log t' / v')
+  where
+    (w, v) = score node
+    w' = fromIntegral w
     t' = fromIntegral t
     v' = fromIntegral v
     k  = sqrt 2.0
 
-pickNode :: (Board b) => GameTree b -> GameTree b
-pickNode (Tree (Node {visits = v0}) ts) = maximumBy compareUCB ts where
-    compareUCB (Tree n1 _) (Tree n2 _) = compare (ucb v0 n1) (ucb v0 n2)
+-----------------------------------------------------------------------------
+
+nMCTSRounds :: (GameState a, MonadRandom m) => Int -> Node a -> m (Node a)
+nMCTSRounds = loop
+  where
+    loop n node
+        | n > 0     = mctsRound node >>= loop (pred n)
+        | otherwise = node
+    mctsRound = liftM snd . explore
