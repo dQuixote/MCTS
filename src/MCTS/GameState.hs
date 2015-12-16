@@ -1,4 +1,4 @@
-module Game where
+module MCTS.AI.GameState where
 
 data Player = Player1
             | Player2
@@ -14,3 +14,7 @@ class GameState a where
     gameOver :: a -> Bool
     winner   :: a -> Maybe Winner
     turn     :: a -> Player
+
+opponent :: Player -> Player
+opponent Player1 = Player2
+opponent Player2 = Player1

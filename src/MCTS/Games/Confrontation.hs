@@ -1,4 +1,4 @@
-module Confrontation where
+module MCTS.Games.Confrontation where
 
 data Side = Light
           | Dark

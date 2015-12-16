@@ -1,8 +1,8 @@
-module MCTS where
+module MCTS.AI.MCTS where
 
 import Control.Monad
 
-import qualified Game
+import qualified GameState as Game
 
 -----------------------------------------------------------------------------
 
