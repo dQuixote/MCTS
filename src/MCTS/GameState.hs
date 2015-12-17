@@ -1,4 +1,4 @@
-module MCTS.AI.GameState where
+module MCTS.GameState where
 
 data Player = Player1
             | Player2
