@@ -16,6 +16,9 @@ data Node a = Node { score     :: (Int, Int)
                    , winner    :: Maybe Game.Winner
                    } deriving (Show)
 
+instance (Eq a) => Eq (Node a) where
+    node1 == node2 = gameState node1 == gameState node2
+
 instance (Game.GameState a) => Game.GameState (Node a) where
     choices  = choices
     gameOver = terminal
@@ -24,9 +27,11 @@ instance (Game.GameState a) => Game.GameState (Node a) where
 
 instance (IOGame.IOGame g) => IOGame.IOGame (Node g) where
     startGame = newNode (IOGame.startGame :: g)
-    aiTurn n node = undefined
-    playerTurn node = liftM newNode $ gameState node >>= playerTurn
-    playGame n node = undefined
+    aiTurn = nMCTSRounds
+    playerTurn node = liftM (`choose` node) $ gameState node >>= playerTurn
+    playerTurn node = do
+        newState <- gameState node >>= playerTurn :: IO g
+        return . head . filter ((== newState) . gameState) $ choices node
     showGame = IOGame.showGame . gameState
 
 -----------------------------------------------------------------------------
@@ -45,6 +50,9 @@ wins = fst . score
 
 visits :: Node a -> Int
 visits = snd . score
+
+choose :: Node a -> Node a -> Node a
+choose child = head . filter (== child) . choices
 
 -----------------------------------------------------------------------------
 

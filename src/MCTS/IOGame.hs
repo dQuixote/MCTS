@@ -7,5 +7,4 @@ class (GameState g) => IOGame g where
     startGame  :: g
     aiTurn     :: Int -> g -> IO g
     playerTurn :: g -> IO g
-    playGame   :: Int -> g -> IO ()
     showGame   :: g -> IO ()
