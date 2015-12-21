@@ -27,7 +27,6 @@ instance IOGame.IOGame TTT where
     -- TODO
     aiTurn     = undefined
     playerTurn = undefined
-    playGame   = undefined
     showGame   = undefined
 
 -----------------------------------------------------------------------------
@@ -105,6 +104,7 @@ defaultInitGame = initGame 3
 
 aiTurn :: Int -> TTT -> IO TTT
 aiTurn n ttt@(TTT board player) = do
+    -- TODO
     newBoard <- undefined
     return $ TTT newBoard $ opponent player
 
@@ -114,26 +114,9 @@ aiTurn n ttt@(TTT board player) = do
 
 playerTurn :: TTT -> IO TTT
 playerTurn ttt@(TTT board player) = do
+    -- TODO
     newBoard <- undefined
     return $ TTT newBoard $ opponent player
-    
-
------------------------------------------------------------------------------
-
--- playGame
-
-playGame :: Int -> g -> IO ()
-playGame n ttt = do
-    humanFirst <- randomIO :: IO Bool
-    if humanFirst
-        then putStrLn "Human plays first."
-        else do
-            putStrLn "AI plays first."
-            -- TODO
-    putStr $ showGame ttt
-    hflush stdout
-    -- TODO
-    return
 
 -----------------------------------------------------------------------------
 
